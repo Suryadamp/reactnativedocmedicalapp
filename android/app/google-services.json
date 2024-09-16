@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "696980049913",
+    "firebase_url": "https://dr-carrot-default-rtdb.firebaseio.com",
+    "project_id": "dr-carrot",
+    "storage_bucket": "dr-carrot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696980049913:android:8c77c7ee8a590c65bef728",
+        "android_client_info": {
+          "package_name": "com.drcarrot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrT5_Jeqeh0cj_AGfabcr4NPnbOcn9C4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696980049913:android:280b3809b432c150bef728",
+        "android_client_info": {
+          "package_name": "com.drcarrot.io"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrT5_Jeqeh0cj_AGfabcr4NPnbOcn9C4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

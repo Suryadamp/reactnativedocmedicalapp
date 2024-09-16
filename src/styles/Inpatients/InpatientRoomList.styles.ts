@@ -1,0 +1,548 @@
+// InpatientRegistration styles
+import { StyleSheet } from 'react-native';
+import { COLORS, FONTS } from '../../constants';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import { isHpTablet } from '../../hooks/useDeviceCheck';
+
+export default StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  header: {
+    justifyContent: 'center',
+    paddingVertical: isHpTablet(1),
+    borderBottomColor: COLORS.white_smoke,
+    borderBottomWidth: 1,
+  },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: hp('1.5%'),
+    paddingVertical: hp('0.7%'),
+  },
+  filterIcon: { alignItems: 'center', height: 14, width: 14 },
+  line: {
+    borderBottomColor: COLORS.grey,
+    borderBottomWidth: 1,
+  },
+  filterText: {
+    marginStart: hp('2%'),
+    marginTop: hp('1.5%'),
+    fontSize: hp('1.4%'),
+    color: COLORS.text,
+    fontWeight: '500',
+    fontFamily: FONTS.SFProDisplayMedium,
+  },
+  filterValue: {
+    marginTop: hp('1.5%'),
+    fontSize: hp('1.4%'),
+    color: COLORS.text,
+    fontWeight: '500',
+    fontFamily: FONTS.SFProDisplayRegular,
+  },
+  backgroundStyle: {
+    backgroundColor: COLORS.white,
+    borderColor: COLORS.gray,
+    borderWidth: 2,
+  },
+  imageTouchStyle: {
+    justifyContent: 'center',
+  },
+  viewStyle: {
+    marginTop: hp('1.5%'),
+  },
+  clearText: {
+    fontFamily: FONTS.Inter,
+    fontSize: hp('1.4%'),
+    fontWeight: '500',
+    marginTop: hp('1.5%'),
+    color: COLORS.text,
+    marginHorizontal: hp('1%'),
+  },
+  deleteIcon: { width: hp('2.5%'), height: hp('2.7%'), marginHorizontal: hp('1%') },
+  divider: {
+    borderBottomWidth: 1,
+    borderColor: COLORS.grey_E5E5E5,
+  },
+  labBkarBoxStyle: {
+    marginHorizontal: hp('1%'),
+    marginVertical: hp('2%'),
+    borderRadius: hp('0.5%'),
+    width: hp('7%'),
+    height: hp('7%'),
+  },
+  contentContainerStyle: {
+    width: '100%',
+    paddingHorizontal: hp('2%'),
+  },
+  commonStyle: {
+    height: hp('2.5%'),
+    width: wp('22%'),
+  },
+  secondWidth: {
+    width: wp('60%'),
+  },
+  thirdWidth: {
+    width: wp('10%'),
+  },
+  boxMainContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: wp('5%'),
+    marginVertical: hp('3%'),
+    backgroundColor: COLORS.background.white,
+  },
+  boxSummaryContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginVertical: hp('3%'),
+    backgroundColor: COLORS.background.white,
+  },
+  saveBtn: {
+    width: '100%',
+    height: isHpTablet('6.5%'), // Adjusted
+    borderRadius: 10,
+    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.background.primary,
+  },
+  saveBtnText: {
+    fontFamily: FONTS.Poppins,
+    fontSize: isHpTablet('2%'), // Adjusted
+    lineHeight: isHpTablet('2.2%'),
+    fontWeight: '700',
+    color: COLORS.background.white,
+    textAlign: 'center',
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: '5%',
+    paddingVertical: '3%',
+  },
+  boxContainerStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: hp('2%'), // Adjusted
+    borderBottomWidth: 1,
+    paddingHorizontal: wp('5%'), // Adjusted
+    borderColor: '#f1f1f1',
+  },
+  flexRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: '3%',
+    height: 50,
+  },
+  inputStyle: {
+    width: wp('90%'), // Adjusted
+    height: hp('5.625%'), // Adjusted
+    backgroundColor: COLORS.white,
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: 12,
+    color: '#343E42',
+    fontStyle: 'normal',
+    lineHeight: 15,
+    alignContent: 'center',
+  },
+  inputNameTxtStyle: {
+    width: wp('80%'), // Adjusted
+    height: hp('5.625%'), // Adjusted
+    backgroundColor: COLORS.white,
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: 12,
+    color: '#343E42',
+    fontStyle: 'normal',
+    lineHeight: 15,
+    alignContent: 'center',
+  },
+  inputTxtStyle: {
+    width: wp('90%'), // Adjusted
+    height: hp('5.625%'), // Adjusted
+    backgroundColor: COLORS.white,
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: 12,
+    color: '#343E42',
+    fontStyle: 'normal',
+    lineHeight: 15,
+    alignContent: 'center',
+  },
+  inputDisTxtStyle: {
+    width: wp('90%'), // Adjusted
+    height: hp('5.625%'), // Adjusted
+    backgroundColor: '#F9F9F9',
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: 12,
+  },
+  iconStyle: {
+    width: wp('5%'),
+    height: hp('2.5%'),
+  },
+  addIcon: {
+    width: wp('5%'),
+    height: hp('2.5%'),
+  },
+  plusIcon: {
+    paddingHorizontal: '5%',
+  },
+  summaryTitle: {
+    fontFamily: FONTS.h4.fontFamily,
+    fontSize: wp('4%'), // Adjusted
+    lineHeight: hp('4%'),
+    justifyContent: 'center',
+    color: COLORS.text,
+  },
+  labelTitle: {
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: wp('3%'), // Adjusted
+    lineHeight: hp('3%'),
+    justifyContent: 'center',
+    color: '#8A8A8A',
+  },
+  summaryContainer: {
+    borderBottomColor: '#E0E0E0',
+    borderBottomWidth: 3,
+    paddingBottom: '3%',
+    paddingHorizontal: wp('5%'),
+  },
+  detailContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  detail: {
+    paddingVertical: wp('2%'),
+  },
+  leftContainer: {
+    width: wp('50%'),
+  },
+  rightContainer: {
+    width: wp('50%'),
+  },
+  valueContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  value: {
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: wp('3%'), // Adjusted
+    lineHeight: hp('3%'),
+    justifyContent: 'center',
+    color: COLORS.text,
+    paddingLeft: '3%',
+  },
+  roomList: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  floorListContainer: {
+    width: '23%',
+    height: hp('100%'),
+    paddingHorizontal: wp('1%'),
+  },
+  roomListContainer: {
+    width: '90%',
+    height: '100%',
+    marginVertical: hp('2%'),
+    backgroundColor: COLORS.background.white,
+  },
+  floorBeforeItem: {
+    height: 100,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomRightRadius: 15,
+    backgroundColor: '#F4F4F4',
+  },
+  floorActiveItem: {
+    height: 100,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomRightRadius: 15,
+    backgroundColor: '#fff',
+  },
+  floorAfterItem: {
+    height: 100,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    borderTopRightRadius: 15,
+    backgroundColor: '#F4F4F4',
+  },
+  floorItem: {
+    height: 100,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    backgroundColor: '#F4F4F4',
+  },
+  scrollViewStyle: {
+    flex: 1,
+  },
+  bgColor: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#F4F4F4',
+  },
+  roomLabel: {
+    color: '#8A8A8A',
+    fontSize: isHpTablet('1.8%'),
+    fontWeight: '400',
+    fontFamily: FONTS.SFProDisplayMedium,
+    paddingHorizontal: wp('2%'),
+  },
+  roomActiveLabel: {
+    color: '#207DFF',
+    fontSize: isHpTablet('1.8%'),
+    fontWeight: '600',
+    fontFamily: FONTS.SFProDisplayMedium,
+    paddingHorizontal: wp('2%'),
+  },
+  listContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+  },
+  roomItemContainer: {
+    width: '100%',
+  },
+  roomNo: {
+    fontSize: isHpTablet('1.1%'),
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontWeight: '700',
+    color: '#207DFF',
+    paddingTop: '6%',
+  },
+  roomFillNo: {
+    fontSize: isHpTablet('1.1%'),
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontWeight: '700',
+    color: '#17CF9D',
+    paddingTop: '6%',
+  },
+  roomIconContainer: {
+    width: wp('15%'),
+    height: hp('7.8%'),
+    backgroundColor: '#E0EDFF',
+    borderRadius: hp('0.7%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    marginVertical: hp('1%'),
+    padding: 5,
+    marginHorizontal: hp('1%'),
+  },
+  roomSelectedContainer: {
+    width: wp('15%'),
+    height: hp('7.8%'),
+    backgroundColor: '#E0EDFF',
+    borderWidth: 1,
+    borderColor: '#207DFF',
+    borderRadius: hp('0.7%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 5,
+    position: 'relative',
+    marginVertical: hp('1%'),
+    marginHorizontal: hp('1%'),
+  },
+  title: {
+    fontFamily: FONTS.SFProDisplayMedium,
+    fontSize: wp('3%'), // Adjusted
+    lineHeight: hp('3%'),
+    justifyContent: 'center',
+    color: '#232323',
+    fontWeight: '700',
+    paddingHorizontal: wp('3%'),
+  },
+  roomActiveIconContainer: {
+    width: wp('15%'),
+    height: hp('7.8%'),
+    backgroundColor: '#DEFFF6',
+    borderRadius: hp('0.7%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    padding: 5,
+    marginVertical: hp('1%'),
+    marginHorizontal: hp('1%'),
+  },
+  tabContainer: {
+    width: '100%',
+  },
+  tabBar: {
+    width: '100%',
+    borderBottomColor: '#EFEFEF',
+    borderBottomWidth: 1,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 50,
+  },
+  tabItem: {
+    width: '30%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: 'transparent',
+    height: 50,
+    marginHorizontal: 10,
+  },
+  tabActiveItem: {
+    width: '30%',
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#207DFF',
+    marginHorizontal: 10,
+  },
+  tabTitle: {
+    fontSize: 13,
+    fontWeight: '400',
+  },
+  tabActiveTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#207DFF',
+  },
+  roomTransferContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginHorizontal: '5%',
+  },
+  roomHistoryContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginHorizontal: '1%',
+  },
+  itemContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginVertical: '7%',
+    width: '50%',
+  },
+  itemHistoryContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+
+    marginVertical: '2%',
+    width: '50%',
+  },
+  label: {
+    fontSize: isHpTablet('1.7%'),
+    fontFamily: FONTS.SFProDisplaySemibold,
+    fontWeight: '600',
+    color: '#8A8A8A',
+  },
+  content: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginVertical: isHpTablet('3.5%'),
+  },
+  roomTabIconContainer: {
+    width: hp('7.5%'),
+    height: hp('7.5%'),
+    backgroundColor: '#E0EDFF',
+    borderRadius: hp('0.7%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    marginVertical: hp('1%'),
+  },
+  historyLeft: {
+    width: hp('7.5%'),
+    height: hp('7.5%'),
+    borderColor: '#DDDDDD',
+    borderRadius: hp('0.7%'),
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  // roomNo: {
+  //   fontSize: 11,
+  //   fontFamily: FONTS.SFProDisplayRegular,
+  //   fontWeight: '700',
+  //   color: '#207DFF',
+  //   paddingTop: '6%',
+  // },
+  roomDetails: {
+    borderRadius: isHpTablet('0.7%'),
+    justifyContent: 'center',
+    paddingHorizontal: isHpTablet('2%'),
+  },
+  floor: {
+    fontSize: isHpTablet('1.6%'),
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontWeight: '500',
+  },
+  ward: {
+    fontSize: isHpTablet('1.6%'),
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontWeight: '500',
+    paddingTop: '2%',
+  },
+  newContainer: {
+    width: hp('7.5%'),
+    height: hp('7.5%'),
+    borderRadius: hp('0.7%'),
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#A1C8FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dotStyle: {
+    position: 'absolute',
+    top: '6%',
+    left: '6%',
+  },
+  ring: {
+    position: 'absolute',
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#F43460',
+    borderColor: 'red',
+    borderWidth: 1,
+    top: '6%',
+    left: '6%',
+  },
+  dot: {
+    height: 6,
+    width: 6,
+    borderRadius: 6 / 2,
+    backgroundColor: '#F43460',
+    position: 'absolute',
+  },
+  dotContainer: {
+    height: 6,
+    width: 6,
+    borderRadius: 6 / 2,
+    backgroundColor: '#F43460',
+  },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

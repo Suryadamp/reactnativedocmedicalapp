@@ -1,0 +1,112 @@
+import store from '../../state';
+import { db } from '../db';
+import { DBSync, DBTables, LastSyncTime } from '../DBSync';
+
+export class PermissionDBSync extends DBSync {
+  public format(permissions: Array<string>): Promise<any> {
+    const currentState = store.getState();
+    var query: string = "";
+    for (var permission of permissions) {
+      query += `(${currentState.users.userId}, "${permission}"),`;
+    }
+    return Promise.resolve(query.slice(0, -1));
+  }
+
+  async syncDB(): Promise<Array<any> | null> {
+    return new Promise(async (resolve, reject) => {
+      var payload: { [key: string]: string | number } = {
+        "table_name": DBTables.permissions,
+        "count": 0,
+        "time": "0"
+      }
+      var response = await this.fetch(payload);
+      if (response?.data?.permissions?.data) {
+        var query: string = await this.format(response.data.permissions.data);
+        if (query) {
+          await Permissions.dropTable();
+          await Permissions.createTable();
+          await Permissions.insert(query);
+        }
+        resolve({ "success": true, "message": "permission synced" });
+      }
+      reject({ "success": false, "message": "invalid api data" });
+    });
+  }
+}
+
+export const Permissions = {
+  // Create Permissions Table
+  async createTable() {
+    return (await db).transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS permissions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          userId INTEGER,
+          permission TEXT,
+          FOREIGN KEY (userId) REFERENCES users (id)
+        )`,
+      );
+    });
+  },
+
+  // Insert Permission
+  async insert(permission: string) {
+    return new Promise(async (resolve, reject) => {
+      (await db).transaction((tx) => {
+        tx.executeSql(
+          `INSERT INTO permissions (userId, permission) VALUES ${permission}`,
+          [],
+          (_, result) => resolve(result),
+          (_, error) => reject(error),
+        );
+      });
+    });
+  },
+
+  // Get Permissions by User ID
+  async getByUserId(userId: number) {
+    return new Promise(async (resolve, reject) => {
+      (await db).transaction((tx) => {
+        tx.executeSql(
+          'SELECT * FROM permissions WHERE userId = ?',
+          [userId],
+          (_, result) => {
+            const rows = result.rows.raw(); // Convert to array of objects
+            resolve(rows);
+          },
+          (_, error) => reject(error),
+        );
+      });
+    });
+  },
+
+  async lastSyncTime(): Promise<{ count: number; time: string }> {
+    return new Promise((resolve, reject) => {
+      (async () => {
+        const result = await (await db).executeSql('SELECT updatedAt FROM appointments ORDER BY updatedAt ASC');
+        resolve({ count: result[0].rows.length, time: result[0].rows.item(result[0].rows.length - 1) });
+      })().catch((error) => reject(error));
+    });
+  },
+
+  // Update Permission
+  async update(id: number, newPermission: string) {
+    return (await db).transaction((tx) => {
+      tx.executeSql('UPDATE permissions SET permission = ? WHERE id = ?', [newPermission, id]);
+    });
+  },
+
+  // Delete Permission
+  async delete(id: number) {
+    return (await db).transaction((tx) => {
+      tx.executeSql('DELETE FROM permissions WHERE id = ?', [id]);
+    });
+  },
+
+  // Drop Permissions Table (Useful for testing or resetting the database)
+  async dropTable() {
+    return (await db).transaction((tx) => {
+      tx.executeSql('DROP TABLE IF EXISTS permissions');
+    });
+  },
+};

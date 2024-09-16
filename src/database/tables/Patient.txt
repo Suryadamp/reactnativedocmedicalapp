@@ -1,0 +1,152 @@
+import { db } from '../db';
+interface PatientData {
+  id?: number;
+  name: string;
+  mobile?: string;
+  user_id?: number;
+  title?: string;
+  age?: number;
+  sex?: string;
+  dob?: string;
+  blood_group?: string;
+  email?: string;
+  address?: string;
+}
+
+export const Patient = {
+  async createTable() {
+    return (await db).transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS patients (
+          id INTEGER PRIMARY KEY,
+          name TEXT NOT NULL,
+          mobile TEXT,
+          user_id INTEGER NOT NULL,
+          title TEXT,
+          age INTEGER NOT NULL,
+          sex INTEGER,
+          dob TEXT,
+          blood_group TEXT NOT NULL,
+          email TEXT NOT NULL,
+          address TEXT
+        )`,
+      );
+    });
+  },
+
+  async insert(patient: PatientData) {
+    return new Promise(async (resolve, reject) => {
+      (await db).transaction((tx) => {
+        tx.executeSql(
+          'INSERT INTO patients (name, mobile, user_id, title, age, sex, dob, blood_group, email, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [
+            patient.name,
+            patient.mobile,
+            patient.user_id,
+            patient.title,
+            patient.age,
+            patient.sex,
+            patient.dob,
+            patient.blood_group,
+            patient.email,
+            patient.address,
+          ],
+          (_, results) => {
+            if (results.rowsAffected > 0) {
+              console.log('Data inserted successfully');
+              resolve(results);
+            } else {
+              console.warn('Failed to insert data');
+              reject(new Error('Failed to insert data'));
+            }
+          },
+          (_, error) => {
+            console.log('Error inserting data', error);
+            reject(error);
+          },
+        );
+      });
+    });
+  },
+
+  async getPatientById(patientId: any) {
+    return new Promise(async (resolve, reject) => {
+      (await db).transaction((tx) => {
+        tx.executeSql(
+          'SELECT * FROM patients WHERE id = ?',
+          [patientId],
+          (_, result) => {
+            const rows = result.rows?.raw();
+            resolve(rows.length > 0 ? rows[0] : null);
+          },
+          (_, error) => reject(error),
+        );
+      });
+    });
+  },
+  async getPatientByUserId(userId: any) {
+    return new Promise(async (resolve, reject) => {
+      (await db).transaction((tx) => {
+        tx.executeSql(
+          'SELECT * FROM patients WHERE user_id = ?',
+          [userId],
+          (_, result) => {
+            const rows = result.rows?.raw();
+            resolve(rows.length > 0 ? rows : null);
+          },
+          (_, error) => reject(error),
+        );
+      });
+    });
+  },
+
+  async getAllPatients() {
+    return new Promise(async (resolve, reject) => {
+      (await db).transaction((tx) => {
+        tx.executeSql(
+          'SELECT * FROM patients',
+          [],
+          (_, result) => {
+            const rows = result.rows?.raw();
+            // Check if rows is a function and call it to get the actual array
+            const actualRows = typeof rows === 'function' ? rows() : rows;
+            resolve(actualRows || []);
+          },
+          (_, error) => reject(error),
+        );
+      });
+    });
+  },
+
+  async updatePatient(patient: PatientData) {
+    return (await db).transaction((tx) => {
+      tx.executeSql(
+        'UPDATE patients SET name = ?, mobile = ?, title = ?, age = ?, sex = ?, dob = ?, blood_group = ?, email = ?, address = ? WHERE id = ?',
+        [
+          patient.name,
+          patient.mobile,
+          patient.title,
+          patient.age,
+          patient.sex,
+          patient.dob,
+          patient.blood_group,
+          patient.email,
+          patient.address,
+          patient.id,
+        ],
+      );
+    });
+  },
+
+  async deletePatient(patientId: any) {
+    return (await db).transaction((tx) => {
+      tx.executeSql('DELETE FROM patients WHERE id = ?', [patientId]);
+    });
+  },
+
+  async dropPatientTable() {
+    return (await db).transaction((tx) => {
+      tx.executeSql('DROP TABLE IF EXISTS patients');
+    });
+  },
+};

@@ -1,0 +1,347 @@
+import { useState, useRef, useEffect } from "react";
+import { ToastAndroid } from "react-native";
+import { MediaStream, RTCPeerConnection, mediaDevices, RTCSessionDescription, RTCIceCandidate } from "react-native-webrtc";
+import { RTCSessionDescriptionInit } from "react-native-webrtc/lib/typescript/RTCSessionDescription";
+import { io } from 'socket.io-client';
+
+const socketUrl = "http://192.168.1.134:3000";
+const randomUserId = Math.floor(Math.random() * (99999 - 10000)) + 10000;
+var name: string | null = null;
+var remoteMedia: MediaStream = new MediaStream();
+export default function WebRTC() {
+    const socket = io(socketUrl);
+    const [isWsConnected, setIsWsConnected] = useState<boolean>(false);
+    const [listUsers, setListUsers] = useState<Array<string>>([]);
+    const [webSocket, setWebSocket] = useState<WebSocket | null>();
+    const [localStream, setlocalStream] = useState<MediaStream | null>(null);
+    const [selectedUser, setSelectedUser] = useState<String | null>(null);
+    const [remoteStream, setRemoteStream] = useState<MediaStream | null>();
+    const [createOfferValue, setCreateOfferValue] = useState<string>();
+    const [createAnswerValue, setCreateAnswerValue] = useState<string>();
+
+    const peerConnection = useRef<RTCPeerConnection>(
+        new RTCPeerConnection({
+            iceServers: [
+                {
+                    urls: 'stun:stun.l.google.com:19302',
+                },
+                {
+                    urls: 'stun:stun1.l.google.com:19302',
+                },
+                {
+                    urls: 'stun:stun2.l.google.com:19302',
+                },
+            ],
+        }),
+    );
+
+    const sessionConstraints = {
+        mandatory: {
+            OfferToReceiveAudio: false,
+            OfferToReceiveVideo: true,
+            VoiceActivityDetection: false
+        }
+    };
+
+    useEffect(() => {
+        socket.on("hi", (protocol, msg) => {
+        })
+    }, []);
+
+    useEffect(() => {
+        wsListeners();
+    }, [webSocket]);
+
+    useEffect(() => {
+        if (selectedUser) {
+            createOffer();
+        }
+    }, [selectedUser]);
+
+    const connectWebRTC = () => {
+        let isFront = true;
+        mediaDevices.enumerateDevices().then((sourceInfos: any) => {
+            let videoSourceId;
+            for (let i = 0; i < sourceInfos.length; i++) {
+                const sourceInfo = sourceInfos[i];
+                if (
+                    sourceInfo.kind == 'videoinput' &&
+                    sourceInfo.facing == (isFront ? 'front' : 'environment')
+                ) {
+                    videoSourceId = sourceInfo.deviceId;
+                }
+            }
+
+            mediaDevices
+                .getUserMedia({
+                    audio: false,
+                    video: {
+                        mandatory: {
+                            minWidth: 500, // Provide your own width, height and frame rate here
+                            minHeight: 300,
+                            minFrameRate: 30,
+                        },
+                        facingMode: isFront ? 'user' : 'environment',
+                        optional: videoSourceId ? [{ sourceId: videoSourceId }] : [],
+                    },
+                })
+                .then((stream: MediaStream) => {
+                    // Get local stream!
+                    try {
+                        var localStream: MediaStream = new MediaStream();
+                        stream.getTracks().forEach((track) => {
+                            localStream.addTrack(track);
+                            peerConnection.current.addTrack(track, stream);
+                            setlocalStream(localStream);
+                        });
+                    } catch (err) {
+                        print(err);
+                    }
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                    // Log error
+                });
+            peerListeners();
+        });
+    }
+
+    const createOffer = async () => {
+        try {
+            const offerDescription: RTCSessionDescription = await peerConnection.current.createOffer(sessionConstraints);
+            await peerConnection.current.setLocalDescription(offerDescription);
+            webSocket?.send(`{"type": "createOffer","name": "${randomUserId}","data": ${JSON.stringify(offerDescription)},"target": "${name}"}`);
+            setCreateOfferValue(JSON.stringify(offerDescription));
+            // Send the offerDescription to the other participant.
+        } catch (err) {
+            print("err");
+            print(err);
+            // Handle Errors
+        };
+    }
+
+    const createGroupWithOffer = async (userId: string | number) => {
+        console.log("createGroupWithOffer");
+        console.log(webSocket);
+        try {
+            const offerDescription: RTCSessionDescription = await peerConnection.current.createOffer(sessionConstraints);
+            await peerConnection.current.setLocalDescription(offerDescription);
+            webSocket?.send(`{"type": "createGroupOffer","name": "${randomUserId}","data": ${JSON.stringify(offerDescription)}}`);
+            setCreateOfferValue(JSON.stringify(offerDescription));
+        } catch (err) {
+            print("err");
+            print(err);
+        };
+    }
+
+    const peerListeners = async () => {
+        if (peerConnection.current != null) {
+            peerConnection.current.addEventListener('connectionstatechange', event => { print("connectionstatechange: ", event); });
+            peerConnection.current.addEventListener('icecandidateerror', event => { print('icecandidateerror :', event); });
+            peerConnection.current.addEventListener('icecandidate', event => {
+                if (event.candidate) {
+                    webSocket?.send(JSON.stringify({ type: 'iceCandidate', name: randomUserId, data: peerConnection.current.localDescription, target: name }));
+                }
+            });
+            peerConnection.current.addEventListener('iceconnectionstatechange', (event) => {
+                console.log('\x1b[36m%s\x1b[0m', 'ICE Connection State:' + peerConnection.current.iceConnectionState);
+            });
+            peerConnection.current.addEventListener('icegatheringstatechange', (event) => {
+                console.log('\x1b[36m%s\x1b[0m', 'ICE Gathering State:', peerConnection.current.iceGatheringState);
+
+                if (peerConnection.current.iceGatheringState === 'complete') {
+                    // All candidates have been gathered; you might consider this a signal to proceed with connection establishment.
+                }
+            });
+            peerConnection.current.addEventListener('negotiationneeded', (event) => {
+                console.log('negotiationneeded');
+            });
+            peerConnection.current.addEventListener('signalingstatechange', (event) => {
+                console.log('signalingstatechange', 'color: blue; font-weight: bold;');
+            });
+            peerConnection.current.addEventListener('track', event => {
+                console.log('\x1b[31m%s\x1b[0m', 'track:' + event.streams[0].getTracks().length);
+                event.streams[0].getTracks().forEach((track) => {
+                    remoteMedia.addTrack(track);
+                    setRemoteStream(remoteMedia);
+                });
+            });
+        }
+    }
+
+    const createAnswer = async (payload: WsResponse) => {
+        try {
+            if (peerConnection != null) {
+                await peerConnection.current.setRemoteDescription(payload.data);
+                console.log("********Offer***************");
+                console.log(payload.message);
+                let answer = await peerConnection.current.createAnswer();
+                console.log("********Answer***************");
+                await peerConnection.current.setLocalDescription(answer);
+                webSocket?.send(`{"type": "createAnswer","name": "${randomUserId}","data": ${JSON.stringify(answer)},"target": "${payload.message}" }`);
+                setCreateOfferValue(JSON.stringify(answer));
+            }
+        } catch (err) {
+            print(err);
+        }
+    }
+
+    const btnCreateAnswer = async () => {
+        if (!createOfferValue) return;
+        ToastAndroid.show(createOfferValue, ToastAndroid.SHORT);
+        let offer: RTCSessionDescriptionInit = JSON.parse(createOfferValue);
+        try {
+            if (peerConnection != null) {
+                console.log("********Offer***************");
+                await peerConnection.current.setRemoteDescription(offer);
+                console.log("********Answer***************");
+                let answer = await peerConnection.current.createAnswer();
+                await peerConnection.current.setLocalDescription(answer);
+                setCreateAnswerValue(JSON.stringify(answer));
+            }
+        } catch (err) {
+            print(err);
+        }
+    }
+
+    const connectWs = () => {
+        try {
+            var webSocketInstance = new WebSocket('ws://192.168.1.134:3000');
+            setWebSocket(webSocketInstance);
+        } catch (err) {
+            ToastAndroid.show("Websocket connection failed!", ToastAndroid.SHORT);
+            console.log(err);
+        }
+    }
+
+    const wsListeners = () => {
+        if (webSocket != null) {
+            webSocket.onopen = () => {
+                setIsWsConnected(true);
+                webSocket.send('{ "type": "addUser", "name": "' + randomUserId + '" }');
+                webSocket.send('{ "type": "listUsers", "name": "' + randomUserId + '" }');
+            }
+            webSocket.onmessage = ((event) => {
+                var message: WsGetUsers = JSON.parse(event.data);
+                if (message.type == WsResponseTypes.listUsers) {
+                    getUsersList(message);
+                }
+                var response: WsResponse = JSON.parse(event.data);
+                if (response.type == WsResponseTypes.isAvailable) {
+                    // connectWebRTC();
+                    ToastAndroid.show(response.message, ToastAndroid.LONG);
+                }
+                if (response.type == WsResponseTypes.callOffer) {
+                    createAnswer(response);
+                }
+                if (response.type == WsResponseTypes.answerReceived) {
+                    acceptAnswer(response);
+                }
+                if (response.type == WsResponseTypes.iceCandidate) {
+                    addingIceCandidate(response);
+                }
+            });
+            webSocket.onclose = ((event) => {
+                setListUsers([]);
+                setlocalStream(null);
+                setIsWsConnected(false);
+            });
+            connectWebRTC();
+            createGroupWithOffer("1");
+        }
+    }
+
+    const disconnectWs = () => {
+        if (webSocket != null) {
+            peerConnection.current.close();
+            webSocket.send('{ "type": "disconnect", "name": "' + randomUserId + '" }');
+            setIsWsConnected(false);
+            webSocket.close();
+        }
+    }
+
+    const acceptAnswer = async (payload: WsResponse) => {
+        console.log("********acceptAnswer***************");
+        try {
+            if (peerConnection.current != null && peerConnection.current.remoteDescription == null) {
+                console.log("********setRemoteDescription***************");
+                peerConnection.current.setRemoteDescription(payload.data);
+            }
+        } catch (err) {
+            print(err);
+        }
+    }
+
+    const addingIceCandidate = async (payload: WsResponse) => {
+        console.log("Candidates added ---------------->");
+        console.log(payload.data);
+        const candidate = new RTCIceCandidate(payload.data);
+        peerConnection.current.addIceCandidate(candidate)
+            .then(() => {
+            })
+            .catch((error) => {
+                console.error('Error adding ICE candidate:', error);
+            });
+    };
+
+
+    const getUsersList = (res: WsGetUsers) => {
+        setListUsers(res.users);
+    }
+
+    const callToUser = (user: string) => {
+        if (webSocket != null) {
+            setSelectedUser(user);
+            name = user;
+            webSocket.send(`{ "type": "startCall", "name": "${randomUserId}", "target": "${user}" }`);
+        }
+    }
+
+    // const RenderRemoteStream = () => <RemoteVideoStream remoteStream={remoteStream} />
+
+    return {
+        connectWs,
+        wsListeners,
+        disconnectWs,
+        callToUser,
+        createOffer,
+        btnCreateAnswer,
+        createGroupWithOffer,
+        remoteStream,
+        randomUserId,
+        isWsConnected,
+        listUsers,
+        localStream,
+        remoteMedia,
+        selectedUser,
+        createOfferValue,
+        createAnswerValue,
+        peerConnection
+    }
+}
+
+function print(...obj: Array<any>) {
+    console.log(obj.join(", "));
+}
+
+export interface WsResponse {
+    type: WsResponseTypes;
+    message: string;
+    data: any;
+}
+
+export interface WsGetUsers {
+    type: WsResponseTypes;
+    users: Array<string>;
+}
+
+export enum WsResponseTypes {
+    addUser = 'addUser',
+    listUsers = 'listUsers',
+    startCall = 'startCall',
+    isAvailable = 'callResponse',
+    callOffer = 'offerReceived',
+    answerReceived = 'answerReceived',
+    iceCandidate = 'iceCandidate'
+}

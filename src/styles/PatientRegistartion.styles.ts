@@ -1,0 +1,152 @@
+import { StyleSheet } from 'react-native';
+import { COLORS, FONTS, SIZES } from '../constants';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import { isHpTablet } from '../hooks/useDeviceCheck';
+
+export default StyleSheet.create({
+  content: {
+    flex: 1,
+    marginHorizontal: hp('2%'),
+  },
+  flexRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // width: SIZES.screenWidth,
+    marginVertical: 5,
+  },
+  mrsInputTxtStyle: {
+    width: SIZES.screenWidth * 0.235,
+    height: isHpTablet('5.5%'),
+    padding: 0,
+    marginRight: 10,
+    backgroundColor: COLORS.white,
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+  },
+  nameInputTxtStyle: {
+    width: SIZES.screenWidth * 0.485,
+    height: isHpTablet('5.5%'),
+    backgroundColor: COLORS.white,
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+  },
+  disableNameTxtStyle: {
+    width: SIZES.screenWidth * 0.75,
+    height: isHpTablet('5.5%'),
+    backgroundColor: '#F9F9F9',
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+  },
+  inputTxtStyle: {
+    // width: wp('93%'),
+    height: isHpTablet('5.5%'),
+    backgroundColor: COLORS.white,
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+  },
+  disableInputTxtStyle: {
+    // width: SIZES.screenWidth * 0.9,
+    height: isHpTablet('5.5%'),
+    backgroundColor: '#F9F9F9',
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+  },
+  ageInputTxtStyle: {
+    width: SIZES.screenWidth * 0.32,
+    height: isHpTablet('5.5%'),
+    padding: 0,
+    backgroundColor: COLORS.white,
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+  },
+  disableAgeInputTxtStyle: {
+    width: SIZES.screenWidth * 0.32,
+    height: isHpTablet('5.5%'),
+    padding: 0,
+    backgroundColor: '#F9F9F9',
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+  },
+  birthInputTxtStyle: {
+    width: SIZES.screenWidth * 0.55,
+    height: isHpTablet('5.5%'),
+    backgroundColor: COLORS.white,
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+    marginRight: 10,
+  },
+  disableDobTxtStyle: {
+    width: SIZES.screenWidth * 0.55,
+    height: isHpTablet('5.5%'),
+    backgroundColor: '#F9F9F9',
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+    marginRight: 10,
+  },
+  statusImage: {
+    marginRight: 8,
+  },
+  checkRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  chartTxt: {
+    fontSize: isHpTablet('1.7%'),
+    color: COLORS.black,
+  },
+  chartDisableTxt: {
+    fontSize: isHpTablet('1.7%'),
+    color: COLORS.black,
+  },
+  selectImage: {
+    marginHorizontal: 13,
+    // marginVertical: 13,
+    marginTop: 8,
+  },
+  avatarImage: {
+    backgroundColor: '#DDDDDD',
+  },
+  contentFlex: {
+    flex: 1,
+    marginHorizontal: 20,
+  },
+  contentFlexRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    // width: SIZES.screenWidth,
+    marginVertical: 5,
+  },
+  contentInputTxtStyle: {
+    // width: SIZES.screenWidth * 0.9,
+    height: isHpTablet('5.5%'),
+    backgroundColor: COLORS.white,
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+    marginVertical: 5,
+  },
+  inputDisTxtStyle: {
+    // width: SIZES.screenWidth * 0.9,
+    height: isHpTablet('5.5%'),
+    backgroundColor: '#F9F9F9',
+    fontFamily: FONTS.SFProDisplayRegular,
+    fontSize: isHpTablet('1.6%'),
+    lineHeight: isHpTablet('1.8%'),
+    marginVertical: 5,
+  },
+});
